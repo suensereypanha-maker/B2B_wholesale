@@ -1,0 +1,22 @@
+<?php
+
+namespace Tests\Feature;
+
+use Tests\TestCase;
+
+class ExampleTest extends TestCase
+{
+    /**
+     * A basic test example.
+     */
+    public function test_the_application_returns_a_successful_response(): void
+    {
+        // Root redirects to /login for guests
+        $response = $this->get('/');
+        $response->assertStatus(302)->assertRedirect('/login');
+
+        // Login page should return 200
+        $loginResponse = $this->get('/login');
+        $loginResponse->assertStatus(200);
+    }
+}
