@@ -93,7 +93,7 @@
             </div>
         </div>
         <div class="stat-footer">
-            <a href="{{ route('admin.categories') }}" class="stat-link">View categories <i class="bi bi-arrow-right"></i></a>
+            <a href="{{ route('admin.categories.index') }}" class="stat-link">View categories <i class="bi bi-arrow-right"></i></a>
         </div>
     </div>
 
@@ -313,7 +313,7 @@
                     </div>
                     <i class="bi bi-chevron-right qa-arrow"></i>
                 </a>
-                <a href="{{ route('admin.categories') }}" class="quick-action-btn" id="qa-category">
+                <a href="{{ route('admin.categories.create') }}" class="quick-action-btn" id="qa-category">
                     <div class="qa-icon qa-icon-indigo">
                         <i class="bi bi-folder-plus"></i>
                     </div>

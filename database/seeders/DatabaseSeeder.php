@@ -55,6 +55,17 @@ class DatabaseSeeder extends Seeder
             );
         }
 
+        // 4. Seed categories & subcategories
+        $this->call(CategorySeeder::class);
+
+        // 5. Seed brands
+        $this->call(BrandSeeder::class);
+
+        // 6. Seed suppliers & products
+        $this->call(SupplierSeeder::class);
+        $this->call(SupplierUserSeeder::class);
+        $this->call(ProductSeeder::class);
+
         $this->command->info('✅  Demo users seeded. Login: admin@wholesale.com / password');
     }
 }

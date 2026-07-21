@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+use App\Http\Controllers\Supplier\ProductsController;
+
 Route::prefix('supplier')->name('supplier.')->middleware(['auth:web', 'role:supplier'])->group(function () {
 
     // Supplier Dashboard
@@ -22,9 +24,10 @@ Route::prefix('supplier')->name('supplier.')->middleware(['auth:web', 'role:supp
     })->name('dashboard');
 
     // Supplier Products (their own catalog items)
-    Route::get('/products', function () {
-        return view('supplier.placeholder', ['title' => 'Supplier Products', 'icon' => 'bi-box-seam']);
-    })->name('products');
+    Route::get('/products', [ProductsController::class, 'index'])->name('products');
+    Route::get('/products/create', [ProductsController::class, 'create'])->name('products.create');
+    Route::post('/products', [ProductsController::class, 'store'])->name('products.store');
+    Route::post('/products/{product}/update-stock', [ProductsController::class, 'updateStock'])->name('products.update-stock');
 
     // Supplier Purchase Orders
     Route::get('/purchase-orders', function () {

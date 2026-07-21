@@ -94,33 +94,49 @@
         <div class="nav-section">
             <span class="nav-section-label">Catalog</span>
 
-            @if($can('products.view'))
-            <a href="{{ $productsRoute }}"
-               class="nav-item {{ request()->routeIs('admin.products') || request()->routeIs('supplier.products') ? 'active' : '' }}"
-               id="nav-products">
-                <span class="nav-icon"><i class="bi bi-box-seam-fill"></i></span>
-                <span class="nav-label">Products</span>
-                <span class="nav-badge warning">18</span>
-            </a>
-            @endif
+            <div class="nav-dropdown {{ request()->routeIs('admin.products') || request()->routeIs('supplier.products') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.brands') ? 'open' : '' }}" id="nav-catalog-dropdown">
+                <a href="#" class="nav-item nav-dropdown-toggle" onclick="event.preventDefault(); this.parentElement.classList.toggle('open');">
+                    <span class="nav-icon"><i class="bi bi-box-seam-fill"></i></span>
+                    <span class="nav-label">Product Catalog</span>
+                    <span class="nav-arrow"><i class="bi bi-chevron-down"></i></span>
+                </a>
+                <div class="nav-sub-menu">
+                    @if($can('products.view'))
+                    <a href="{{ route('admin.products.index') }}"
+                       class="nav-sub-item {{ request()->routeIs('admin.products.*') || request()->routeIs('supplier.products') ? 'active' : '' }}"
+                       id="nav-products">
+                        <span class="nav-sub-dot"></span>
+                        <span class="nav-label">Products</span>
+                        <span class="nav-badge warning">{{ \App\Models\Product::count() }}</span>
+                    </a>
+                    @endif
 
-            @if($can('categories.view'))
-            <a href="{{ route('admin.categories') }}"
-               class="nav-item {{ request()->routeIs('admin.categories') ? 'active' : '' }}"
-               id="nav-categories">
-                <span class="nav-icon"><i class="bi bi-grid-fill"></i></span>
-                <span class="nav-label">Categories</span>
-            </a>
-            @endif
+                    @if($can('categories.view'))
+                    <a href="{{ route('admin.categories.index', ['filter' => 'parents']) }}"
+                       class="nav-sub-item {{ request()->routeIs('admin.categories.*') && request()->query('filter') !== 'subcategories' ? 'active' : '' }}"
+                       id="nav-categories">
+                        <span class="nav-sub-dot"></span>
+                        <span class="nav-label">Categories</span>
+                    </a>
 
-            @if($can('brands.view'))
-            <a href="{{ route('admin.brands') }}"
-               class="nav-item {{ request()->routeIs('admin.brands') ? 'active' : '' }}"
-               id="nav-brands">
-                <span class="nav-icon"><i class="bi bi-award-fill"></i></span>
-                <span class="nav-label">Brands</span>
-            </a>
-            @endif
+                    <a href="{{ route('admin.categories.index', ['filter' => 'subcategories']) }}"
+                       class="nav-sub-item {{ request()->routeIs('admin.categories.*') && request()->query('filter') === 'subcategories' ? 'active' : '' }}"
+                       id="nav-subcategories">
+                        <span class="nav-sub-dot"></span>
+                        <span class="nav-label">Subcategories</span>
+                    </a>
+                    @endif
+
+                    @if($can('brands.view'))
+                    <a href="{{ route('admin.brands.index') }}"
+                       class="nav-sub-item {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}"
+                       id="nav-brands">
+                        <span class="nav-sub-dot"></span>
+                        <span class="nav-label">Brands</span>
+                    </a>
+                    @endif
+                </div>
+            </div>
         </div>
         @endif
 
@@ -130,8 +146,8 @@
             <span class="nav-section-label">Procurement</span>
 
             @if($can('suppliers.view'))
-            <a href="{{ route('admin.suppliers') }}"
-               class="nav-item {{ request()->routeIs('admin.suppliers') ? 'active' : '' }}"
+            <a href="{{ route('admin.suppliers.index') }}"
+               class="nav-item {{ request()->routeIs('admin.suppliers.*') ? 'active' : '' }}"
                id="nav-suppliers">
                 <span class="nav-icon"><i class="bi bi-truck-front-fill"></i></span>
                 <span class="nav-label">Suppliers</span>

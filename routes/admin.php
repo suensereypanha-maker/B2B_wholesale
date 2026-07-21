@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\BrandsController;
+use App\Http\Controllers\Admin\CategoriesController;
+use App\Http\Controllers\Admin\ProductsController;
+use App\Http\Controllers\Admin\SuppliersController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\PermissionsController;
@@ -42,11 +46,52 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'role:admin'])
         'destroy' => 'permissions.destroy',
     ])->except(['show']);
 
-    // Placeholder routes (UI only)
-    Route::get('/products',        fn () => view('admin.placeholder', ['title' => 'Products',         'icon' => 'bi-box-seam']))->name('products');
-    Route::get('/categories',      fn () => view('admin.placeholder', ['title' => 'Categories',       'icon' => 'bi-grid']))->name('categories');
-    Route::get('/brands',          fn () => view('admin.placeholder', ['title' => 'Brands',           'icon' => 'bi-award']))->name('brands');
-    Route::get('/suppliers',       fn () => view('admin.placeholder', ['title' => 'Suppliers',        'icon' => 'bi-truck']))->name('suppliers');
+    // Products — full resource CRUD
+    Route::get('/products-main', [ProductsController::class, 'index'])->name('products');
+    Route::resource('products', ProductsController::class)->names([
+        'index'   => 'products.index',
+        'create'  => 'products.create',
+        'store'   => 'products.store',
+        'edit'    => 'products.edit',
+        'update'  => 'products.update',
+        'destroy' => 'products.destroy',
+    ])->except(['show']);
+    Route::post('/products/{product}/toggle-status', [ProductsController::class, 'toggleStatus'])->name('products.toggle-status');
+    Route::post('/products/{product}/toggle-featured', [ProductsController::class, 'toggleFeatured'])->name('products.toggle-featured');
+    // Categories & Subcategories — full resource CRUD
+    Route::get('/categories-main', [CategoriesController::class, 'index'])->name('categories');
+    Route::resource('categories', CategoriesController::class)->names([
+        'index'   => 'categories.index',
+        'create'  => 'categories.create',
+        'store'   => 'categories.store',
+        'edit'    => 'categories.edit',
+        'update'  => 'categories.update',
+        'destroy' => 'categories.destroy',
+    ])->except(['show']);
+    Route::post('/categories/{category}/toggle-status', [CategoriesController::class, 'toggleStatus'])->name('categories.toggle-status');
+    // Brands — full resource CRUD
+    Route::get('/brands-main', [BrandsController::class, 'index'])->name('brands');
+    Route::resource('brands', BrandsController::class)->names([
+        'index'   => 'brands.index',
+        'create'  => 'brands.create',
+        'store'   => 'brands.store',
+        'edit'    => 'brands.edit',
+        'update'  => 'brands.update',
+        'destroy' => 'brands.destroy',
+    ])->except(['show']);
+    Route::post('/brands/{brand}/toggle-status', [BrandsController::class, 'toggleStatus'])->name('brands.toggle-status');
+    Route::post('/brands/{brand}/toggle-featured', [BrandsController::class, 'toggleFeatured'])->name('brands.toggle-featured');
+    // Suppliers — full resource CRUD & approval
+    Route::get('/suppliers-main', [SuppliersController::class, 'index'])->name('suppliers');
+    Route::resource('suppliers', SuppliersController::class)->names([
+        'index'   => 'suppliers.index',
+        'create'  => 'suppliers.create',
+        'store'   => 'suppliers.store',
+        'edit'    => 'suppliers.edit',
+        'update'  => 'suppliers.update',
+        'destroy' => 'suppliers.destroy',
+    ])->except(['show']);
+    Route::post('/suppliers/{supplier}/toggle-status', [SuppliersController::class, 'toggleStatus'])->name('suppliers.toggle-status');
     Route::get('/customers',       fn () => view('admin.placeholder', ['title' => 'Customers',        'icon' => 'bi-person-lines-fill']))->name('customers');
     Route::get('/purchase-orders', fn () => view('admin.placeholder', ['title' => 'Purchase Orders',  'icon' => 'bi-cart-check']))->name('purchase-orders');
     Route::get('/sales-orders',    fn () => view('admin.placeholder', ['title' => 'Sales Orders',     'icon' => 'bi-receipt']))->name('sales-orders');

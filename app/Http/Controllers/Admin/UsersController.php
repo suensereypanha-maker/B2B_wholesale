@@ -82,6 +82,17 @@ class UsersController extends Controller
         $user->is_active = !$user->is_active;
         $user->save();
 
+        // Sync linked supplier profile status if user is a supplier
+        if ($user->hasRole('supplier')) {
+            $supplier = \App\Models\Supplier::where('user_id', $user->id)
+                ->orWhere('email', $user->email)
+                ->first();
+            if ($supplier) {
+                $supplier->is_active = $user->is_active;
+                $supplier->save();
+            }
+        }
+
         $action = $user->is_active ? 'approved/activated' : 'deactivated';
         
         return back()->with('success', "User \"{$user->name}\" has been {$action} successfully.");
