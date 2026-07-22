@@ -2,8 +2,10 @@
      SIDEBAR PARTIAL — B2B Wholesale Admin
      ================================================================ --}}
 @php
-    $user = auth('admin')->user() ?? auth('web')->user() ?? auth()->user();
-    $isSupplier = $user && $user->hasRole('supplier');
+    $user = request()->is('supplier*')
+        ? (auth('web')->user() ?? auth('admin')->user() ?? auth()->user())
+        : (auth('admin')->user() ?? auth('web')->user() ?? auth()->user());
+    $isSupplier = $user && $user->hasRole('supplier') && !$user->isSuperAdmin() && !$user->hasRole('admin');
     $can = function($permission) use ($user) {
         return $user && ($user->isSuperAdmin() || $user->hasPermission($permission));
     };
@@ -102,7 +104,7 @@
                 </a>
                 <div class="nav-sub-menu">
                     @if($can('products.view'))
-                    <a href="{{ route('admin.products.index') }}"
+                    <a href="{{ $productsRoute }}"
                        class="nav-sub-item {{ request()->routeIs('admin.products.*') || request()->routeIs('supplier.products') ? 'active' : '' }}"
                        id="nav-products">
                         <span class="nav-sub-dot"></span>

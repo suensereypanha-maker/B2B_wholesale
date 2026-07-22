@@ -92,81 +92,102 @@
 <div class="card-panel animate-fadeInUp" style="animation-delay:.12s; margin-top: 24px;">
     
     {{-- Filter Header --}}
-    <div class="panel-header" style="flex-wrap: wrap; gap: 16px;">
-        <div class="matrix-module-filter" style="border: 1px solid var(--border); padding: 4px; display: inline-flex; border-radius: var(--radius-full);">
-            <a href="{{ route('admin.products.index', ['filter' => 'all', 'search' => $search, 'category_id' => $categoryId, 'brand_id' => $brandId, 'supplier_id' => $supplierId]) }}" 
-               class="role-action-btn {{ $filter === 'all' ? 'active-filter' : '' }}" 
-               style="border: none; border-radius: var(--radius-full); text-decoration:none;">
-               All <span class="badge ms-1" style="background: var(--border); color: var(--text-secondary)">{{ $counts['all'] }}</span>
-            </a>
-            <a href="{{ route('admin.products.index', ['filter' => 'in_stock', 'search' => $search]) }}" 
-               class="role-action-btn {{ $filter === 'in_stock' ? 'active-filter' : '' }}" 
-               style="border: none; border-radius: var(--radius-full); text-decoration:none;">
-               In Stock <span class="badge ms-1" style="background: var(--emerald-light); color: var(--emerald)">{{ $counts['in_stock'] }}</span>
-            </a>
-            <a href="{{ route('admin.products.index', ['filter' => 'low_stock', 'search' => $search]) }}" 
-               class="role-action-btn {{ $filter === 'low_stock' ? 'active-filter' : '' }}" 
-               style="border: none; border-radius: var(--radius-full); text-decoration:none;">
-               Low Stock <span class="badge ms-1" style="background: var(--warning-light); color: var(--amber)">{{ $counts['low_stock'] }}</span>
-            </a>
-            <a href="{{ route('admin.products.index', ['filter' => 'featured', 'search' => $search]) }}" 
-               class="role-action-btn {{ $filter === 'featured' ? 'active-filter' : '' }}" 
-               style="border: none; border-radius: var(--radius-full); text-decoration:none;">
-               Featured <span class="badge ms-1" style="background: var(--violet-light); color: var(--violet)">{{ $counts['featured'] }}</span>
-            </a>
-            <a href="{{ route('admin.products.index', ['filter' => 'inactive', 'search' => $search]) }}" 
-               class="role-action-btn {{ $filter === 'inactive' ? 'active-filter' : '' }}" 
-               style="border: none; border-radius: var(--radius-full); text-decoration:none;">
-               Inactive <span class="badge ms-1" style="background: var(--danger-light); color: var(--danger)">{{ $counts['inactive'] }}</span>
-            </a>
+    <div class="filter-toolbar-header">
+        
+        {{-- Top Bar: Status Tabs (Left) & Search + Actions (Right) --}}
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            
+            {{-- Status Tabs --}}
+            <div class="matrix-module-filter status-tabs-container">
+                <a href="{{ route('admin.products.index', ['filter' => 'all', 'search' => $search, 'category_id' => $categoryId, 'brand_id' => $brandId, 'supplier_id' => $supplierId]) }}" 
+                   class="role-action-btn {{ $filter === 'all' ? 'active-filter' : '' }}" 
+                   style="border: none; border-radius: var(--radius-full); text-decoration:none;">
+                   All <span class="badge ms-1" style="background: var(--border); color: var(--text-secondary)">{{ $counts['all'] }}</span>
+                </a>
+                <a href="{{ route('admin.products.index', ['filter' => 'in_stock', 'search' => $search, 'category_id' => $categoryId, 'brand_id' => $brandId, 'supplier_id' => $supplierId]) }}" 
+                   class="role-action-btn {{ $filter === 'in_stock' ? 'active-filter' : '' }}" 
+                   style="border: none; border-radius: var(--radius-full); text-decoration:none;">
+                   In Stock <span class="badge ms-1" style="background: var(--emerald-light); color: var(--emerald)">{{ $counts['in_stock'] }}</span>
+                </a>
+                <a href="{{ route('admin.products.index', ['filter' => 'low_stock', 'search' => $search, 'category_id' => $categoryId, 'brand_id' => $brandId, 'supplier_id' => $supplierId]) }}" 
+                   class="role-action-btn {{ $filter === 'low_stock' ? 'active-filter' : '' }}" 
+                   style="border: none; border-radius: var(--radius-full); text-decoration:none;">
+                   Low Stock <span class="badge ms-1" style="background: var(--warning-light); color: var(--amber)">{{ $counts['low_stock'] }}</span>
+                </a>
+                <a href="{{ route('admin.products.index', ['filter' => 'featured', 'search' => $search, 'category_id' => $categoryId, 'brand_id' => $brandId, 'supplier_id' => $supplierId]) }}" 
+                   class="role-action-btn {{ $filter === 'featured' ? 'active-filter' : '' }}" 
+                   style="border: none; border-radius: var(--radius-full); text-decoration:none;">
+                   Featured <span class="badge ms-1" style="background: var(--violet-light); color: var(--violet)">{{ $counts['featured'] }}</span>
+                </a>
+                <a href="{{ route('admin.products.index', ['filter' => 'inactive', 'search' => $search, 'category_id' => $categoryId, 'brand_id' => $brandId, 'supplier_id' => $supplierId]) }}" 
+                   class="role-action-btn {{ $filter === 'inactive' ? 'active-filter' : '' }}" 
+                   style="border: none; border-radius: var(--radius-full); text-decoration:none;">
+                   Inactive <span class="badge ms-1" style="background: var(--danger-light); color: var(--danger)">{{ $counts['inactive'] }}</span>
+                </a>
+            </div>
+
+            {{-- Search & Clear Filters --}}
+            <div class="d-flex align-items-center gap-2">
+                <div class="position-relative" style="min-width: 240px;">
+                    <i class="bi bi-search position-absolute text-muted" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.85rem;"></i>
+                    <input type="search" name="search" form="product-filter-form" class="search-input" 
+                           placeholder="Search name, SKU..." value="{{ $search }}" 
+                           style="padding-left: 36px; height: 38px; border-radius: 20px; border: 1px solid var(--border); width: 100%;">
+                </div>
+
+                @if($search || $categoryId || $brandId || $supplierId || $filter !== 'all')
+                    <a href="{{ route('admin.products.index') }}" class="btn-outline-secondary-sm rounded-pill" title="Clear Filters" style="height: 38px; display: inline-flex; align-items: center; padding: 0 14px;">
+                        <i class="bi bi-x-circle me-1"></i> Clear
+                    </a>
+                @endif
+            </div>
+
         </div>
 
-        {{-- Multi-Filter Controls --}}
-        <form action="{{ route('admin.products.index') }}" method="GET" class="d-flex align-items-center gap-2 flex-wrap ms-auto">
+        {{-- Bottom Bar: Category, Brand, Supplier Dropdowns --}}
+        <form id="product-filter-form" action="{{ route('admin.products.index') }}" method="GET" class="filter-controls-bar">
             <input type="hidden" name="filter" value="{{ $filter }}">
 
             {{-- Category Filter --}}
-            <select name="category_id" class="form-select form-select-sm" style="min-width: 150px; height: 38px;" onchange="this.form.submit()">
-                <option value="">All Categories</option>
-                @foreach($categories as $cat)
-                    <option value="{{ $cat->id }}" {{ $categoryId == $cat->id ? 'selected' : '' }}>
-                        {{ $cat->name }}
-                    </option>
-                @endforeach
-            </select>
-
-            {{-- Brand Filter --}}
-            <select name="brand_id" class="form-select form-select-sm" style="min-width: 140px; height: 38px;" onchange="this.form.submit()">
-                <option value="">All Brands</option>
-                @foreach($brands as $b)
-                    <option value="{{ $b->id }}" {{ $brandId == $b->id ? 'selected' : '' }}>
-                        {{ $b->name }}
-                    </option>
-                @endforeach
-            </select>
-
-            {{-- Supplier Filter --}}
-            <select name="supplier_id" class="form-select form-select-sm" style="min-width: 160px; height: 38px;" onchange="this.form.submit()">
-                <option value="">All Suppliers</option>
-                @foreach($suppliers as $sup)
-                    <option value="{{ $sup->id }}" {{ $supplierId == $sup->id ? 'selected' : '' }}>
-                        {{ $sup->company_name }}
-                    </option>
-                @endforeach
-            </select>
-
-            <div class="position-relative">
-                <input type="search" name="search" class="search-input search-input-sm" 
-                       placeholder="Search name, SKU..." value="{{ $search }}" 
-                       style="min-width: 180px; padding-left: 36px; height: 38px;">
+            <div class="filter-control-group">
+                <span class="filter-control-icon"><i class="bi bi-grid-fill"></i></span>
+                <select name="category_id" class="custom-filter-select" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    @foreach($categories as $cat)
+                        <option value="{{ $cat->id }}" {{ $categoryId == $cat->id ? 'selected' : '' }}>
+                            {{ $cat->name }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
-            @if($search || $categoryId || $brandId || $supplierId || $filter !== 'all')
-                <a href="{{ route('admin.products.index') }}" class="btn-outline-secondary-sm" title="Clear Filters" style="height: 38px; display: inline-flex; align-items: center;">
-                    <i class="bi bi-x-circle me-1"></i> Clear
-                </a>
-            @endif
+            {{-- Brand Filter --}}
+            <div class="filter-control-group">
+                <span class="filter-control-icon"><i class="bi bi-award-fill"></i></span>
+                <select name="brand_id" class="custom-filter-select" onchange="this.form.submit()">
+                    <option value="">All Brands</option>
+                    @foreach($brands as $b)
+                        <option value="{{ $b->id }}" {{ $brandId == $b->id ? 'selected' : '' }}>
+                            {{ $b->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- Supplier Filter --}}
+            <div class="filter-control-group">
+                <span class="filter-control-icon"><i class="bi bi-building"></i></span>
+                <select name="supplier_id" class="custom-filter-select" onchange="this.form.submit()">
+                    <option value="">All Suppliers</option>
+                    @foreach($suppliers as $sup)
+                        <option value="{{ $sup->id }}" {{ $supplierId == $sup->id ? 'selected' : '' }}>
+                            {{ $sup->company_name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
         </form>
+
     </div>
 
     {{-- Data Table --}}
@@ -252,19 +273,31 @@
                         </span>
                     </td>
                     <td>
-                        @if($product->stock_qty > 10)
-                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1">
-                                <i class="bi bi-box-seam me-1"></i> {{ $product->stock_qty }} in stock
-                            </span>
-                        @elseif($product->stock_qty > 0)
-                            <span class="badge bg-warning-subtle text-amber border border-warning-subtle px-2.5 py-1">
-                                <i class="bi bi-exclamation-triangle me-1"></i> {{ $product->stock_qty }} low stock
-                            </span>
-                        @else
-                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1">
-                                Out of stock
-                            </span>
-                        @endif
+                        <div class="d-flex align-items-center gap-2">
+                            @if($product->stock_qty > 10)
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1">
+                                    <i class="bi bi-box-seam me-1"></i> {{ $product->stock_qty }} in stock
+                                </span>
+                            @elseif($product->stock_qty > 0)
+                                <span class="badge bg-warning-subtle text-amber border border-warning-subtle px-2.5 py-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i> {{ $product->stock_qty }} low stock
+                                </span>
+                            @else
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1">
+                                    Out of stock
+                                </span>
+                            @endif
+
+                            <form action="{{ route('admin.products.update-stock', $product) }}" method="POST" class="d-inline-flex align-items-center gap-1 ms-1">
+                                @csrf
+                                <input type="number" name="stock_qty" value="{{ $product->stock_qty }}" min="0" 
+                                       class="form-control form-control-sm text-center font-monospace" style="width: 65px; height: 26px; font-size: 0.75rem;" 
+                                       title="Quick Update Stock">
+                                <button type="submit" class="btn btn-sm btn-primary-solid p-0 d-inline-flex align-items-center justify-content-center" style="width: 26px; height: 26px;" title="Save Stock">
+                                    <i class="bi bi-check-lg" style="font-size: 0.85rem;"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                     <td>
                         <form action="{{ route('admin.products.toggle-status', $product) }}" method="POST" class="d-inline">

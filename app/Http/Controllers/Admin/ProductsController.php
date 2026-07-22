@@ -17,8 +17,15 @@ class ProductsController extends Controller
     /**
      * Display a listing of all products.
      */
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
+        if (!auth('admin')->check()) {
+            $user = auth('web')->user() ?? auth()->user();
+            if ($user && $user->hasRole('supplier') && !$user->isSuperAdmin() && !$user->hasRole('admin')) {
+                return redirect()->route('supplier.products');
+            }
+        }
+
         $query = Product::with(['category', 'brand', 'supplier']);
 
         $filter     = $request->query('filter', 'all');
@@ -99,7 +106,7 @@ class ProductsController extends Controller
         $brands     = Brand::orderBy('name')->get();
         $suppliers  = Supplier::where('is_active', true)
                         ->where(function ($q) {
-                            $q->whereHas('user', fn($u) => $u->where('role_id', 7)->where('is_active', true))
+                            $q->whereHas('user', fn($u) => $u->whereHas('role', fn($r) => $r->where('slug', 'supplier'))->where('is_active', true))
                               ->orWhereNull('user_id');
                         })
                         ->orderBy('company_name')
@@ -183,7 +190,7 @@ class ProductsController extends Controller
         $brands     = Brand::orderBy('name')->get();
         $suppliers  = Supplier::where('is_active', true)
                         ->where(function ($q) {
-                            $q->whereHas('user', fn($u) => $u->where('role_id', 7)->where('is_active', true))
+                            $q->whereHas('user', fn($u) => $u->whereHas('role', fn($r) => $r->where('slug', 'supplier'))->where('is_active', true))
                               ->orWhereNull('user_id');
                         })
                         ->orderBy('company_name')
@@ -291,5 +298,21 @@ class ProductsController extends Controller
         $status = $product->is_featured ? 'marked as Featured' : 'unmarked as Featured';
 
         return back()->with('success', "Product \"{$product->name}\" has been {$status}.");
+    }
+
+    /**
+     * Quick stock quantity update by admin.
+     */
+    public function updateStock(Request $request, Product $product): RedirectResponse
+    {
+        $validated = $request->validate([
+            'stock_qty' => 'required|integer|min:0',
+        ]);
+
+        $product->update([
+            'stock_qty' => $validated['stock_qty'],
+        ]);
+
+        return back()->with('success', "Stock quantity for \"{$product->name}\" updated to {$product->stock_qty} units.");
     }
 }

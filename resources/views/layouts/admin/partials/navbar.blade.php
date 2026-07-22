@@ -202,7 +202,9 @@
 
         {{-- Profile Dropdown --}}
         @php
-            $currentUser = auth('admin')->user() ?? auth('web')->user() ?? auth()->user();
+            $currentUser = request()->is('supplier*')
+                ? (auth('web')->user() ?? auth('admin')->user() ?? auth()->user())
+                : (auth('admin')->user() ?? auth('web')->user() ?? auth()->user());
             $userName = $currentUser->name ?? 'User';
             $userInitials = collect(explode(' ', $userName))->map(fn($n) => mb_substr($n, 0, 1))->take(2)->join('');
             $userRole = $currentUser->role->name ?? 'User';
@@ -238,7 +240,7 @@
                     <a class="dropdown-item profile-menu-item profile-logout" href="#">
                         <i class="bi bi-box-arrow-left"></i> Sign Out
                     </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    <form id="logout-form" action="{{ request()->is('admin*') ? route('admin.logout') : route('logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
                 </li>

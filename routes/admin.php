@@ -58,6 +58,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'role:admin'])
     ])->except(['show']);
     Route::post('/products/{product}/toggle-status', [ProductsController::class, 'toggleStatus'])->name('products.toggle-status');
     Route::post('/products/{product}/toggle-featured', [ProductsController::class, 'toggleFeatured'])->name('products.toggle-featured');
+    Route::post('/products/{product}/update-stock', [ProductsController::class, 'updateStock'])->name('products.update-stock');
     // Categories & Subcategories — full resource CRUD
     Route::get('/categories-main', [CategoriesController::class, 'index'])->name('categories');
     Route::resource('categories', CategoriesController::class)->names([

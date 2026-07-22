@@ -43,9 +43,6 @@ class LoginController extends Controller
             if (!$user->is_active) {
                 Auth::guard('web')->logout();
                 
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
-                
                 return back()
                     ->withInput($request->only('email'))
                     ->with('error', 'Your supplier account is pending administrator approval.');
@@ -101,16 +98,22 @@ class LoginController extends Controller
     }
 
     /**
-     * Log the user out of the application.
+     * Log the user out of the web guard (suppliers / buyers).
      */
     public function logout(Request $request): RedirectResponse
     {
-        Auth::guard('admin')->logout();
         Auth::guard('web')->logout();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
         return redirect()->route('login')->with('success', 'You have been successfully logged out.');
+    }
+
+    /**
+     * Log the user out of the admin guard.
+     */
+    public function adminLogout(Request $request): RedirectResponse
+    {
+        Auth::guard('admin')->logout();
+
+        return redirect()->route('admin.login')->with('success', 'You have been successfully logged out of the admin portal.');
     }
 }
